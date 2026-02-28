@@ -1,0 +1,3 @@
+# MongoDB connection settings
+MONGODB_URI=mongodb+srv://tuanduy123:tuanduy35399@cluster0.otnwj13.mongodb.net/
+MONGODB_DB=flappybirddb
