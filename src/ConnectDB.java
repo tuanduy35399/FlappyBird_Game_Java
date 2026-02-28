@@ -9,34 +9,18 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Simple helper that reads connection information from a ".env" file
- * in the project root and exposes a MongoDatabase instance.
- * <p>
- * The expected contents of .env are:
- * 
- * <pre>
- * MONGODB_URI=mongodb://user:password@host:port
- * MONGODB_DB=databaseName
- * </pre>
- * <p>
- * This implementation does not bring in any third-party dotenv
- * library; it performs a very small manual parse. You can replace
- * it with a library such as `io.github.cdimascio:java-dotenv` if
- * you prefer.
- */
 public class ConnectDB {
     private static final String ENV_PATH = ".env";
     private static final Map<String, String> env = new HashMap<>();
 
     static {
-        // read the .env file once at class load
+        //đọc file .env 
         try (BufferedReader reader = new BufferedReader(new FileReader(ENV_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty() || line.startsWith("#")) {
-                    continue; // skip comments and blank lines
+                    continue;  // bỏ qua dòng trống và comment
                 }
                 int eq = line.indexOf('=');
                 if (eq > 0) {
@@ -50,11 +34,7 @@ public class ConnectDB {
         }
     }
 
-    /**
-     * Returns a MongoDatabase using values from the environment file.
-     *
-     * @throws IllegalStateException when required keys are missing
-     */
+
     public static MongoDatabase getDatabase() {
         String uri = env.get("MONGODB_URI");
         String dbName = env.get("MONGODB_DB");
@@ -64,7 +44,7 @@ public class ConnectDB {
         MongoClient client = MongoClients.create(uri);
         MongoDatabase database = client.getDatabase(dbName);
 
-        // simple ping to verify connection
+        // kiểm tra kết nối bằng cách ping database
         try {
             database.runCommand(new Document("ping", 1));
             System.out.println("Kết nối cơ sở dữ liệu thành công");
