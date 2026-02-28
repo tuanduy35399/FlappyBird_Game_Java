@@ -1,7 +1,10 @@
 {
-    "java.project.sourcePaths": ["src"],
-    "java.project.outputPath": "bin",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar"
-    ]
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar",
+    "/home/hackerlord/Downloads/bson-5.0.1.jar",
+    "/home/hackerlord/Downloads/mongodb-driver-core-5.0.1.jar",
+    "/home/hackerlord/Downloads/mongodb-driver-sync-5.0.1.jar"
+  ]
 }

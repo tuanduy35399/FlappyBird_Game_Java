@@ -4,6 +4,13 @@ import javax.swing.JFrame;
 
 public class App {
     public static void main(String[] args) throws Exception {
+        // attempt database connection (reads values from .env)
+        try {
+            ConnectDB.getDatabase();
+        } catch (Exception e) {
+            System.err.println("Lỗi khi kết nối database: " + e.getMessage());
+        }
+
         int boardWidth = 450;
         int boardHeight = 600;
 
@@ -15,9 +22,15 @@ public class App {
 
         FlappyBird flappyBird = new FlappyBird();
         frame.add(flappyBird);
-        frame.pack();   
+        frame.pack();
         flappyBird.requestFocus();
         frame.setVisible(true);
+        // Ensure the game panel has focus so it receives key events
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                flappyBird.requestFocusInWindow();
+            }
+        });
         frame.setResizable(false);
 
     }
