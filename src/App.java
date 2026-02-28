@@ -1,6 +1,6 @@
-import javax.swing.*;
+import java.awt.Color;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -19,6 +19,5 @@ public class App {
         flappyBird.requestFocus();
         frame.setVisible(true);
         frame.setResizable(false);
-
     }
 }
