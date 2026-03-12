@@ -133,8 +133,8 @@ public class LoginFrame extends JFrame {
                 String password = new String(txtPassword.getPassword());
 
                 if (userManager.login(username, password)) {
-                    dispose(); // Đóng giao diện đăng nhập
-                    App.startGame(username); // Chuyển cảnh vào Game
+                    new MenuFrame(username).setVisible(true); // Mở MenuFrame trước
+                    dispose(); // Đóng Login sau
                 } else {
                     JOptionPane.showMessageDialog(LoginFrame.this, "Invalid email or password!", "Error", JOptionPane.ERROR_MESSAGE);
                 }

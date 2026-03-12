@@ -2,6 +2,9 @@
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "lib/**/*.jar",
+        "c:\\Users\\Duy\\Downloads\\bson-5.0.1.jar",
+        "c:\\Users\\Duy\\Downloads\\mongodb-driver-core-5.0.1.jar",
+        "c:\\Users\\Duy\\Downloads\\mongodb-driver-sync-5.0.1.jar"
     ]
 }
