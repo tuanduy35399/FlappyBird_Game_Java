@@ -173,6 +173,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
             String returnText = "Return";
             int returnTextX = btnX + (btnWidth - metrics.stringWidth(returnText)) / 2;
             int returnTextY = returnBtnY + ((btnHeight - metrics.getHeight()) / 2) + metrics.getAscent();
+            g.setColor(Color.black);
             g.drawString(returnText, returnTextX, returnTextY);
         } else {
             g.drawString(String.valueOf((int) score), 10, 40);

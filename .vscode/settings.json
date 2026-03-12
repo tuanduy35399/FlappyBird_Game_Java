@@ -5,6 +5,7 @@
         "lib/**/*.jar",
         "c:\\Users\\Duy\\Downloads\\bson-5.0.1.jar",
         "c:\\Users\\Duy\\Downloads\\mongodb-driver-core-5.0.1.jar",
-        "c:\\Users\\Duy\\Downloads\\mongodb-driver-sync-5.0.1.jar"
+        "c:\\Users\\Duy\\Downloads\\mongodb-driver-sync-5.0.1.jar",
+        "c:\\Users\\Duy\\Downloads\\opencv\\build\\java\\opencv-4120.jar"
     ]
 }
