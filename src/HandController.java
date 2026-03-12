@@ -9,7 +9,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.opencv.videoio.VideoCapture;
 
-public class FaceController implements Runnable {
+public class HandController implements Runnable {
     private static final String CAMERA_WINDOW = "Flappy Bird Camera";
     private static final int MOTION_THRESHOLD = 1800;
     private static final double STABLE_BLEND = 0.35;
@@ -18,7 +18,7 @@ public class FaceController implements Runnable {
     private volatile boolean running = true;
     private double lastTrackedNormalizedY = 0.5;
 
-    public FaceController(FlappyBird game) {
+    public HandController(FlappyBird game) {
         this.game = game;
     }
 
