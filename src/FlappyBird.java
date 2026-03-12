@@ -63,8 +63,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
     // game logic
     Bird bird;
     int velocityX = -5;
-    int velocityY = 3;
-    int gravity = 1;
+    int velocityY = 0;
+    int gravity = 0;
 
     ArrayList<Pipe> pipes;
     Random random = new Random(); 
@@ -191,10 +191,41 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
         scoreSaved = false;
     }
 
+    public void startGameControl() {
+        if (!gameStarted) {
+            resetGame();
+            gameLoop.start();
+            placePipesTimer.start();
+        }
+    }
+
+    public void applyHandControl(int direction) {
+        startGameControl();
+
+        if (direction < 0) {
+            velocityY = -4;
+        } else if (direction > 0) {
+            velocityY = 4;
+        } else {
+            velocityY = 0;
+        }
+    }
+
+    public void setBirdPositionFromControl(double normalizedY) {
+        startGameControl();
+        velocityY = 0;
+
+        double clamped = Math.max(0.0, Math.min(1.0, normalizedY));
+        int minBirdY = 0;
+        int maxBirdY = boardHeight - bird.height;
+        bird.y = minBirdY + (int) Math.round(clamped * maxBirdY);
+    }
+
     public void move() {
         velocityY += gravity;
         bird.y += velocityY;
         bird.y = Math.max(bird.y, 0);
+        bird.y = Math.min(bird.y, boardHeight - bird.height);
 
         for (int i = 0; i < pipes.size(); i++) {
             Pipe pipe = pipes.get(i);
@@ -210,8 +241,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
             }
         }
 
-        if (bird.y > boardHeight) {
-            gameOver = true;
+        if (bird.y > boardHeight - bird.height) {
+            bird.y = boardHeight - bird.height;
         }
     }
 
@@ -238,13 +269,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            if (!gameStarted) {
-                resetGame();
-                gameLoop.start();
-                placePipesTimer.start();
-            } else {
-                velocityY = -9;
-            }
+            startGameControl();
         }
     }
 
@@ -257,9 +282,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
             // Start button
             if (mouseX >= btnX && mouseX <= btnX + btnWidth && 
                 mouseY >= btnY && mouseY <= btnY + btnHeight) {
-                resetGame();
-                gameLoop.start();
-                placePipesTimer.start();
+                startGameControl();
             } // Return button
             else if (mouseX >= btnX && mouseX <= btnX + btnWidth && 
                      mouseY >= returnBtnY && mouseY <= returnBtnY + btnHeight) {
@@ -267,8 +290,6 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
                 gameFrame.dispose();
                 new MenuFrame(playerName).setVisible(true);
             }
-        } else {
-            velocityY = -9;
         }
     }
 
