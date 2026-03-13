@@ -33,7 +33,7 @@ public class App {
 
         // Truyền tên người chơi vào game để lưu điểm
         FlappyBird flappyBird = new FlappyBird(username);
-        FaceController faceController = new FaceController(flappyBird);
+        HandController faceController = new HandController(flappyBird);
         Thread faceThread = new Thread(faceController, "hand-wave-controller");
         faceThread.setDaemon(true);
 
