@@ -14,13 +14,13 @@ public class ConnectDB {
     private static final Map<String, String> env = new HashMap<>();
 
     static {
-        //đọc file .env 
+        // đọc file .env
         try (BufferedReader reader = new BufferedReader(new FileReader(ENV_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty() || line.startsWith("#")) {
-                    continue;  // bỏ qua dòng trống và comment
+                    continue; // bỏ qua dòng trống và comment
                 }
                 int eq = line.indexOf('=');
                 if (eq > 0) {
@@ -33,7 +33,6 @@ public class ConnectDB {
             System.err.println("Unable to read .env file: " + e.getMessage());
         }
     }
-
 
     public static MongoDatabase getDatabase() {
         String uri = env.get("MONGODB_URI");

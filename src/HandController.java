@@ -1,22 +1,22 @@
 import javax.swing.SwingUtilities;
 
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.highgui.HighGui;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.imgproc.Moments;
-import org.opencv.videoio.VideoCapture;
+import org.opencv.core.Core; //xử lý cơ bản
+import org.opencv.core.Mat; //ma trận
+import org.opencv.core.Rect; ///định nghĩa vùng hình chữ nhật
+import org.opencv.core.Scalar; ///định nghĩa màu sắc 
+import org.opencv.highgui.HighGui; //Hiển thị cửa sổ ảnh
+import org.opencv.imgproc.Imgproc;// Các hàm xử lý ảnh
+import org.opencv.imgproc.Moments;//tính trọng tâm của vùng ảnh
+import org.opencv.videoio.VideoCapture;//kết nối cam
 
 public class HandController implements Runnable {
-    private static final String CAMERA_WINDOW = "Flappy Bird Camera";
-    private static final int MOTION_THRESHOLD = 1800;
-    private static final double STABLE_BLEND = 0.35;
+    private static final String CAMERA_WINDOW = "Flappy Bird Camera"; //tên của sổ
+    private static final int MOTION_THRESHOLD = 1800; //ngưỡng pixel xác định có chuyển động tay
+    private static final double STABLE_BLEND = 0.35; // giảm giật, làm mượt 
 
-    private final FlappyBird game;
-    private volatile boolean running = true;
-    private double lastTrackedNormalizedY = 0.5;
+    private final FlappyBird game; //tạo đối tượng tham chiếu tới class Flappy Bird
+    private volatile boolean running = true; 
+    private double lastTrackedNormalizedY = 0.5; // vị trí tay trước đó (mặc định là con chim ở giữa)
 
     public HandController(FlappyBird game) {
         this.game = game;
@@ -29,32 +29,32 @@ public class HandController implements Runnable {
     @Override
     public void run() {
         try {
-            OpenCVLoader.load();
+            OpenCVLoader.load(); //load file 
         } catch (UnsatisfiedLinkError e) {
             System.err.println("Khong nap duoc OpenCV: " + e.getMessage());
             return;
         }
 
-        VideoCapture camera = new VideoCapture(0);
+        VideoCapture camera = new VideoCapture(0); //mở cam
         if (!camera.isOpened()) {
             System.err.println("Khong mo duoc webcam.");
             return;
         }
-
-        Mat frame = new Mat();
-        Mat grayFrame = new Mat();
-        Mat previousGrayFrame = new Mat();
-        Mat difference = new Mat();
-        Mat thresholded = new Mat();
+        // Này là gọi hàm Matrix viết tắt là Mat()
+        Mat frame = new Mat(); //ảnh gốc từ cam
+        Mat grayFrame = new Mat(); //ảnh xám
+        Mat previousGrayFrame = new Mat();//ảnh xám cũ
+        Mat difference = new Mat();//sai khác giữa 2 grayFrame và previousGrayFrame
+        Mat thresholded = new Mat();// Ảnh nhị phân (đen trắng)
 
         while (running) {
             if (!camera.read(frame) || frame.empty()) {
                 continue;
             }
 
-            Core.flip(frame, frame, 1);
-            Imgproc.cvtColor(frame, grayFrame, Imgproc.COLOR_BGR2GRAY);
-            Imgproc.GaussianBlur(grayFrame, grayFrame, new org.opencv.core.Size(21, 21), 0);
+            Core.flip(frame, frame, 1); //lật ảnh lại như gương cho dễ nhìn
+            Imgproc.cvtColor(frame, grayFrame, Imgproc.COLOR_BGR2GRAY); // Chuyển ảnh sang grayscale (giảm dữ liệu)
+            Imgproc.GaussianBlur(grayFrame, grayFrame, new org.opencv.core.Size(21, 21), 0); // Làm mờ ảnh để giảm nhiễu
 
             if (previousGrayFrame.empty()) {
                 grayFrame.copyTo(previousGrayFrame);
@@ -65,67 +65,46 @@ public class HandController implements Runnable {
             int roiY = frame.rows() / 5;
             int roiWidth = frame.cols() / 3;
             int roiHeight = frame.rows() / 2;
-            Rect waveRegion = new Rect(roiX, roiY, roiWidth, roiHeight);
+            Rect waveRegion = new Rect(roiX, roiY, roiWidth, roiHeight); // Tạo hình chữ nhật vùng detect
 
-            Core.absdiff(previousGrayFrame, grayFrame, difference);
-            Imgproc.threshold(difference, thresholded, 25, 255, Imgproc.THRESH_BINARY);
+            Core.absdiff(previousGrayFrame, grayFrame, difference); //so sánh frame cũ vs mới để biết sự khác biệt
+            Imgproc.threshold(difference, thresholded, 25, 255, Imgproc.THRESH_BINARY); //nhị phân hóa
+            //Nếu trắng thì có chuyển động
 
-            Mat regionMask = thresholded.submat(waveRegion);
-            int motionPixels = Core.countNonZero(regionMask);
-            boolean handDetected = motionPixels > MOTION_THRESHOLD;
-            double centerY = -1;
-            double normalizedY = lastTrackedNormalizedY;
+            Mat regionMask = thresholded.submat(waveRegion); // Cắt vùng ROI từ ảnh
+            int motionPixels = Core.countNonZero(regionMask); // Đếm số pixel trắng (mức độ chuyển động)
+            boolean handDetected = motionPixels > MOTION_THRESHOLD; // Nếu vượt ngưỡng thì coi như có tay
+            double centerY = -1;// vị trí Y của tay
+            double normalizedY = lastTrackedNormalizedY;// vị trí đã làm mượt
 
             if (handDetected) {
-                Moments moments = Imgproc.moments(regionMask, true);
+                Moments moments = Imgproc.moments(regionMask, true); // Tính trọng tâm vùng chuyển động
                 if (moments.get_m00() > 0) {
-                    centerY = moments.get_m01() / moments.get_m00();
-                    double rawNormalizedY = centerY / roiHeight;
-                    normalizedY = (lastTrackedNormalizedY * (1.0 - STABLE_BLEND)) + (rawNormalizedY * STABLE_BLEND);
-                    lastTrackedNormalizedY = normalizedY;
+                    centerY = moments.get_m01() / moments.get_m00(); //tính vị trí Y trung tâm
+                    double rawNormalizedY = centerY / roiHeight; // Chuẩn hóa về [0,1]
+                    normalizedY = (lastTrackedNormalizedY * (1.0 - STABLE_BLEND)) + (rawNormalizedY * STABLE_BLEND); // Làm mượt (blend giữa cũ và mới)
+                    lastTrackedNormalizedY = normalizedY;// Cập nhật lại vị trí
                 }
             }
 
             Scalar regionColor = handDetected ? new Scalar(0, 255, 0) : new Scalar(0, 165, 255);
-            Imgproc.rectangle(frame, waveRegion, regionColor, 2);
-            Imgproc.putText(frame, "Move hand inside box", new org.opencv.core.Point(roiX, roiY - 10),
-                    Imgproc.FONT_HERSHEY_SIMPLEX, 0.7, regionColor, 2);
-            Imgproc.line(frame, new org.opencv.core.Point(roiX, roiY + (roiHeight / 2)),
-                    new org.opencv.core.Point(roiX + roiWidth, roiY + (roiHeight / 2)),
-                    new Scalar(255, 255, 0), 2);
-            Imgproc.putText(frame, "Motion: " + motionPixels, new org.opencv.core.Point(20, 35),
-                    Imgproc.FONT_HERSHEY_SIMPLEX, 0.8, new Scalar(255, 255, 255), 2);
-            String statusText = "No hand movement";
-            if (handDetected) {
-                statusText = "Bird follows hand position";
-            }
-            Imgproc.putText(frame, statusText,
-                    new org.opencv.core.Point(20, 70), Imgproc.FONT_HERSHEY_SIMPLEX, 0.8, regionColor, 2);
+            //khung thành màu xanh nếu phát hiện chuyển động, còn không thì màu cam
+            Imgproc.rectangle(frame, waveRegion, regionColor, 2); //vẽ khung ROI
 
-            if (centerY >= 0) {
-                int markerX = roiX + (roiWidth / 2);
-                int markerY = roiY + (int) centerY;
-                Imgproc.circle(frame, new org.opencv.core.Point(markerX, markerY), 10, new Scalar(255, 0, 255), -1);
-            }
-
-            int mappedBirdY = (int) Math.round(normalizedY * 100);
-            Imgproc.putText(frame, "Mapped Y: " + mappedBirdY + "%",
-                    new org.opencv.core.Point(20, 105), Imgproc.FONT_HERSHEY_SIMPLEX, 0.8,
-                    new Scalar(255, 255, 255), 2);
-
-            HighGui.imshow(CAMERA_WINDOW, frame);
-            HighGui.waitKey(1);
+            HighGui.imshow(CAMERA_WINDOW, frame); //hiển thị cửa sổ cam
+            HighGui.waitKey(1); //delay 1 giây để cập nhật frame
 
             if (handDetected) {
                 final double controlY = normalizedY;
-                SwingUtilities.invokeLater(() -> game.setBirdPositionFromControl(controlY));
+                SwingUtilities.invokeLater(() -> game.setBirdPositionFromControl(controlY)); //gửi vị trí sang game
             }
 
-            grayFrame.copyTo(previousGrayFrame);
-            regionMask.release();
+            grayFrame.copyTo(previousGrayFrame);// Lưu frame hiện tại để so sánh vòng sau
+
+            regionMask.release();//giải phóng bộ nhớ
         }
 
-        camera.release();
+        camera.release();//đóng cam 
         HighGui.destroyWindow(CAMERA_WINDOW);
     }
 }

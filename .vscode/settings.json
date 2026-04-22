@@ -1,11 +1,19 @@
 {
-    "java.project.sourcePaths": ["src"],
-    "java.project.outputPath": "bin",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "c:\\Users\\Duy\\Downloads\\bson-5.0.1.jar",
-        "c:\\Users\\Duy\\Downloads\\mongodb-driver-core-5.0.1.jar",
-        "c:\\Users\\Duy\\Downloads\\mongodb-driver-sync-5.0.1.jar",
-        "c:\\Users\\Duy\\Downloads\\opencv\\build\\java\\opencv-4120.jar"
-    ]
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar",
+    "c:\\Users\\Duy\\Downloads\\bson-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\mongodb-driver-core-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\mongodb-driver-sync-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\opencv\\build\\java\\opencv-4120.jar",
+    "c:\\Users\\Duy\\Downloads\\File cần thiết cho Java\\bson-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\File cần thiết cho Java\\mongodb-driver-core-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\File cần thiết cho Java\\mongodb-driver-sync-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\File cần thiết cho Java\\opencv\\build\\java\\opencv-4120.jar",
+    "c:\\Users\\Duy\\Downloads\\JavaLibrary\\bson-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\JavaLibrary\\mongodb-driver-core-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\JavaLibrary\\mongodb-driver-sync-5.0.1.jar",
+    "c:\\Users\\Duy\\Downloads\\JavaLibrary\\opencv\\build\\java\\opencv-4120.jar"
+  ]
 }
