@@ -28,8 +28,8 @@ public final class OpenCVLoader {
         }
 
         String[] dsDuongDan = new String[] {
-                "C:/Users/Duy/Downloads/JavaLibrary/opencv/build/java/x64/opencv_java4120.dll",
-                "C:/Users/Duy/Downloads/JavaLibrary/opencv/build/java/x64/" + Core.NATIVE_LIBRARY_NAME + ".dll"
+                "D:/Project/opencv/build/java/x64/opencv_java4120.dll",
+                "D:/Project/opencv/buil/java/x64" + Core.NATIVE_LIBRARY_NAME + ".dll"
         };
         // Duyệt thử từng đường dẫn
         for (String duongDan : dsDuongDan) {

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class FlappyBird extends JPanel implements ActionListener, KeyListener, MouseListener {
+    UserManager userManager = new UserManager();
+
     int boardWidth = 450;
     int boardHeight = 600;
 
@@ -28,6 +30,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
     int birdY = boardHeight / 2;
     int birdWidth = 40;
     int birdHeight = 40;
+
+    
 
     class Bird {
         int x = birdX;
@@ -83,6 +87,7 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
 
     FlappyBird(String playerName) {
         this.playerName = playerName;
+        this.highScore = userManager.getHighScore(playerName);
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         setBackground(Color.white);
 
@@ -284,6 +289,12 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener, M
             placePipesTimer.stop();
             gameLoop.stop();
             gameStarted = false;
+
+            if (!scoreSaved) {
+                userManager.updateHighScore(playerName, score); // Lưu điểm lên DB
+                highScore = userManager.getHighScore(playerName); // Cập nhật lại UI
+                scoreSaved = true;
+            }
         }
     }
 
